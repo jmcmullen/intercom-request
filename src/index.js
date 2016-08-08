@@ -13,13 +13,14 @@ const router = Router({prefix: '/intercom'});
 const client = new Client(config.intercom).usePromises();
 
 app
-  .use(Cors())
+  .use(Cors({ origin: true }))
   .use(BodyParser())
   .use(router.routes())
   .use(router.allowedMethods());
 
 router.post('/', (ctx, next) => {
 
+  console.log(ctx.request.body);
   const data = ctx.request.body.user;
   const name = `${data.first_name} ${data.last_name}`;
   
