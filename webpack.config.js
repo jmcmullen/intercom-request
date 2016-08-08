@@ -12,7 +12,7 @@ fs.readdirSync('node_modules')
   });
 
 module.exports = {
-    entry: '.src/index.js',
+    entry: './src/index.js',
     target: 'node',
     output: {
         path: path.resolve(__dirname, 'bin'),

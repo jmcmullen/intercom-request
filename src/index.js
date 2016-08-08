@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 import Koa from 'koa';
 import Router from 'koa-router';
+import Cors from 'koa-cors';
 import BodyParser from 'koa-bodyparser';
 import { Intercom, Client } from 'intercom-client';
 import { config } from './config';
@@ -8,10 +9,11 @@ import { config } from './config';
 console.log(config);
 
 const app = new Koa();
-const router = Router();
+const router = Router({prefix: '/intercom'});
 const client = new Client(config.intercom).usePromises();
 
 app
+  .use(Cors())
   .use(BodyParser())
   .use(router.routes())
   .use(router.allowedMethods());
@@ -20,7 +22,9 @@ router.post('/', (ctx, next) => {
 
   const data = ctx.request.body.user;
   const name = `${data.first_name} ${data.last_name}`;
-
+  
+  ctx.status = 200;
+	
   client.users.find({ email: data.email })
     .then((resp) => {
       console.log("Found!", resp);
