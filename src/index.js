@@ -20,27 +20,31 @@ app
 
 router.post('/', (ctx, next) => {
 
-  console.log(ctx.request.body);
   const data = ctx.request.body.user;
-  const name = `${data.first_name} ${data.last_name}`;
-  
-  ctx.status = 200;
-	
-  client.users.find({ email: data.email })
-    .then((resp) => {
-      console.log("Found!", resp);
-      createIntercomMessage(resp.body, data);
-    })
-    .catch((error) => {
-      console.log("Error", error);
-      client.users.create({ name: name, email: data.email })
-        .then((resp) => {
-          createIntercomMessage(resp.body, data);
-        })
-        .catch((error) => {
-          console.log(`Error! Could't create a user for ${name}`);
-        });
-    });
+
+  if(data) {
+    const name = `${data.first_name} ${data.last_name}`;
+    client.users.find({ email: data.email })
+      .then((resp) => {
+        console.log("Found!", resp);
+        createIntercomMessage(resp.body, data);
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        client.users.create({ name: name, email: data.email })
+          .then((resp) => {
+            createIntercomMessage(resp.body, data);
+          })
+          .catch((error) => {
+            console.log(`Error! Could't create a user for ${name}`);
+          });
+      });
+  } else {
+    console.log('Invalid request: ', ctx.request.body);
+    ctx.status = 400;
+    ctx.body = ctx.request.body;
+  }
+
 
   function createIntercomMessage(user, data) {
     const message = {
