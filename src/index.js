@@ -23,6 +23,7 @@ router.post('/', (ctx, next) => {
   const data = ctx.request.body.user;
 
   if(data) {
+    console.log('Recieved data: ', data);
     const name = `${data.first_name} ${data.last_name}`;
     client.users.find({ email: data.email })
       .then((resp) => {
@@ -54,10 +55,10 @@ router.post('/', (ctx, next) => {
       },
       body: `A new trial request has been made.
 
-      Name: ${user.name},
-      Role: ${data.role},
-      School / Organisation: ${data.school},
-      Email Address: ${data.email},
+      Name: ${user.name}
+      Role: ${data.role}
+      School / Organisation: ${data.school}
+      Email Address: ${data.email}
       Phone Number: ${data.phone}
       `
     }
